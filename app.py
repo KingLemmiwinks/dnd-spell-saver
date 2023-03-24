@@ -1,6 +1,6 @@
 """Spell Saver"""
 
-import requests, json
+import requests, json, os
 from flask import Flask, request, redirect, render_template, flash, session, g
 from flask_debugtoolbar import DebugToolbarExtension
 from forms import RegisterForm, LoginForm
@@ -13,10 +13,10 @@ CURR_USER_KEY = "curr_user"
 app = Flask(__name__)
 app.app_context().push()
 
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql:///capstone_1_db'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql:///postgresql-asymmetrical-78818'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SQLALCHEMY_ECHO'] = True
-app.config['SECRET_KEY'] = "177013"
+app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', '177013')
 app.config['DEBUG_TB_INTERCEPT_REDIRECTS'] = False
 debug = DebugToolbarExtension(app)
 
