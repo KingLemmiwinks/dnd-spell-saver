@@ -1,4 +1,4 @@
-"""Capstone 1"""
+"""Spell Saver"""
 
 import requests, json
 from flask import Flask, request, redirect, render_template, flash, session, g
