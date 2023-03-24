@@ -13,8 +13,7 @@ CURR_USER_KEY = "curr_user"
 app = Flask(__name__)
 app.app_context().push()
 
-# app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql:///postgresql-asymmetrical-78818'
-app.config['SQLALCHEMY_DATABASE_URI'] = 'clhkwoifscttqr:bf6607274b97b4f160290d76dfb50ff4fafc238a0a3c03f9bcafd8f6c0561744@ec2-3-234-204-26.compute-1.amazonaws.com:5432/dbqfkqhan460ai'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql:///postgresql-asymmetrical-78818'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SQLALCHEMY_ECHO'] = True
 app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', '177013')
@@ -28,6 +27,7 @@ db.create_all()
 ############################## HOME ROUTE ##############################
 
 @app.route('/')
+
 def home():
     """Show home page."""
 
