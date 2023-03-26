@@ -1,6 +1,6 @@
 """Spell Saver"""
 
-import requests, json, os
+import requests, json, os, psycopg2
 from flask import Flask, request, redirect, render_template, flash, session, g
 from flask_debugtoolbar import DebugToolbarExtension
 from forms import RegisterForm, LoginForm
@@ -13,8 +13,12 @@ CURR_USER_KEY = "curr_user"
 app = Flask(__name__)
 app.app_context().push()
 
+DATABASE_URL = os.environ['DATABASE_URL']
+conn = psycopg2.connect(DATABASE_URL, sslmode='require')
+
 app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get(
     'DATABASE_URL','postgresql:///capstone_1_db')
+
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SQLALCHEMY_ECHO'] = True
 app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', '177013')
