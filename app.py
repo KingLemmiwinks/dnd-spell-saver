@@ -13,6 +13,11 @@ CURR_USER_KEY = "curr_user"
 app = Flask(__name__)
 app.app_context().push()
 
+uri = os.getenv("DATABASE_URL")  # or other relevant config var
+if uri.startswith("postgres://"):
+    uri = uri.replace("postgres://", "postgresql://", 1)
+# rest of connection code using the connection string `uri`
+
 app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get(
     'DATABASE_URL','postgresql:///capstone_1_db')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
@@ -22,12 +27,12 @@ app.config['DEBUG_TB_INTERCEPT_REDIRECTS'] = False
 debug = DebugToolbarExtension(app)
 
 connect_db(app)
-# db.create_all()
+db.create_all()
 
 
 ############################## HOME ROUTE ##############################
 
-db.create_all()
+
 @app.route('/')
 
 def home():
