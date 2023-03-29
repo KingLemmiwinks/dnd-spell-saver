@@ -14,7 +14,7 @@ app = Flask(__name__)
 app.app_context().push()
 
 app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get(
-    'postgresql://clhkwoifscttqr:bf6607274b97b4f160290d76dfb50ff4fafc238a0a3c03f9bcafd8f6c0561744@ec2-3-234-204-26.compute-1.amazonaws.com:5432/dbqfkqhan460ai','postgresql:///capstone_1_db')
+    'postgresql:///clhkwoifscttqr:bf6607274b97b4f160290d76dfb50ff4fafc238a0a3c03f9bcafd8f6c0561744@ec2-3-234-204-26.compute-1.amazonaws.com:5432/dbqfkqhan460ai','postgresql:///capstone_1_db')
 
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SQLALCHEMY_ECHO'] = True
