@@ -2,7 +2,6 @@
 
 import requests, json, os
 from flask import Flask, request, redirect, render_template, flash, session, g
-from flask_debugtoolbar import DebugToolbarExtension
 from forms import RegisterForm, LoginForm
 from models import db, connect_db, User, Likes
 from sqlalchemy.exc import IntegrityError
@@ -13,18 +12,16 @@ CURR_USER_KEY = "curr_user"
 app = Flask(__name__)
 app.app_context().push()
 
-# app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get(
-#     'postgresql:///clhkwoifscttqr:bf6607274b97b4f160290d76dfb50ff4fafc238a0a3c03f9bcafd8f6c0561744@ec2-3-234-204-26.compute-1.amazonaws.com:5432/dbqfkqhan460ai','postgresql:///capstone_1_db')
-app.config['SQLALCHEMY_DATABASE_URI'] = "postgresql://clhkwoifscttqr:bf6607274b97b4f160290d76dfb50ff4fafc238a0a3c03f9bcafd8f6c0561744@ec2-3-234-204-26.compute-1.amazonaws.com:5432/dbqfkqhan460ai"
+uri = os.environ.get('DATABASE_URL')
 
+if uri and uri.startswith("postgres://"):
+    uri = uri.replace("postgres://", "postgresql://", 1)
+
+app.config['SQLALCHEMY_DATABASE_URI'] = uri
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SQLALCHEMY_ECHO'] = True
-app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', '177013')
-app.config['DEBUG_TB_INTERCEPT_REDIRECTS'] = False
-debug = DebugToolbarExtension(app)
 
 connect_db(app)
-# db.create_all()
 
 ############################## HOME ROUTE ##############################
 
@@ -116,7 +113,7 @@ def login():
 
         if user:
             do_login(user)
-            session["user_id"] = user.id  # keep logged in
+            session["user_id"] = user.id  # keep user logged in
             return redirect("/")
 
         else:
@@ -189,31 +186,6 @@ def get_spell_detail_page(index):
     return render_template('spell_detail.html', spell_detail=spell_detail)
 
 
-@app.route('/spells/<string:spell_index>/<string:spell_name>/like', methods=['POST'])
-def add_like(spell_index, spell_name):
-    """Toggle a current user's favorite spell."""
-
-    if not g.user:
-        flash("Access unauthorized.", "danger")
-        return redirect("/")
-
-    user_likes = g.user.likes
-
-    liked_spell_index = Likes.query.filter(
-        Likes.spell_index == spell_index).first()
-
-    if liked_spell_index in user_likes:
-        # Unfavorite
-        remove_like_from_db(spell_index)
-
-    else:
-        # Favorite a spell        
-        add_like_to_db(spell_index, spell_name)
-        
-
-    return redirect("/spells")
-
-
 ############################## FAVORITES ROUTES ##############################
 
 
@@ -250,6 +222,30 @@ def put_favorites_on_page():
     liked_spells = [like for like in g.user.likes]
 
     return render_template('favorites.html', likes=g.user.likes)
+
+
+@app.route('/spells/<string:spell_index>/<string:spell_name>/like', methods=['POST'])
+def add_like(spell_index, spell_name):
+    """Toggle a current user's favorite spell."""
+
+    if not g.user:
+        flash("Access unauthorized.", "danger")
+        return redirect("/")
+
+    user_likes = g.user.likes
+
+    liked_spell_index = Likes.query.filter(
+        Likes.spell_index == spell_index).first()
+
+    if liked_spell_index in user_likes:
+        # Unfavorite
+        remove_like_from_db(spell_index)
+
+    else:
+        # Favorite a spell
+        add_like_to_db(spell_index, spell_name)
+
+    return redirect("/spells")
 
 
 @app.route('/favorites/<string:spell_index>/remove', methods=['POST'])
