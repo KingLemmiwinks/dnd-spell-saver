@@ -12,12 +12,12 @@ CURR_USER_KEY = "curr_user"
 app = Flask(__name__)
 app.app_context().push()
 
-uri = os.environ.get('DATABASE_URL')
+uri = os.getenv('DATABASE_URL')
 
 if uri and uri.startswith("postgres://"):
-    uri = uri.replace("postgres://", "postgresql://", 1)
+    uri = uri.replace("postgres://", "postgresql://")
 
-app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get(uri)
+app.config['SQLALCHEMY_DATABASE_URI'] = uri
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SQLALCHEMY_ECHO'] = True
 
